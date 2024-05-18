@@ -6,7 +6,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
@@ -31,8 +34,8 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
     private String getFormattedDateTime() {
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter forrmatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
-        return now.format(forrmatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+        return now.format(formatter);
     }
 
     public void sendMessage(Long chatId, String text) {
@@ -41,86 +44,71 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-
+            e.printStackTrace();
         }
+    }
 
+    public void deleteMessage(Long chatId, Integer messageId) {
+        DeleteMessage deleteMessage = new DeleteMessage();
+        deleteMessage.setChatId(chatId.toString());
+        deleteMessage.setMessageId(messageId);
+
+        try {
+            execute(deleteMessage);
+            System.out.println("Message deleted: " + messageId);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        //System.out.println("Received an update");
-
         String formatDateTime = getFormattedDateTime();
-        // Проверяем, содержит ли обновление сообщение и текст в этом сообщении
-        if (update.hasMessage()) {
-            //System.out.println("Update has a message");
 
-            if (update.getMessage().hasText()) {
-                //System.out.println("Message has text");
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            Message message = update.getMessage();
+            String messageText = message.getText();
+            long chatId = message.getChatId();
+            System.out.println(chatId);
+            int messageId = message.getMessageId();
+            User user = message.getFrom();
+            String username = user.getUserName() != null ? user.getUserName() : user.getFirstName();
 
-                String messageText = update.getMessage().getText();
-                long chatId = update.getMessage().getChatId();
-                System.out.println(chatId);
-                int messageId = update.getMessage().getMessageId();
+            Pattern pattern = Pattern.compile("(https?://(?:www\\.)?instagram\\.com/\\S+)");
+            Matcher matcher = pattern.matcher(messageText);
 
-                // Создаем объект SendMessage для отправки простого текстового сообщения
-                SendMessage message = new SendMessage();
-                message.setChatId(String.valueOf(chatId));
+            if (matcher.find()) {
+                String modifiedMessageText = matcher.replaceAll(m -> {
+                    String url = m.group();
+                    return url.replace("instagram.com", "ddinstagram.com");
+                });
 
-                // Проверяем, пришло ли сообщение из группы или личного чата
-                if (update.getMessage().getChat().isGroupChat() || update.getMessage().getChat().isSuperGroupChat() || update.getMessage().getChat().isUserChat()) {
-                    if (update.getMessage().getChat().isGroupChat() || update.getMessage().getChat().isSuperGroupChat()) {
-                        //   System.out.println("Message is from a group or supergroup chat");
-                    } else {
-                      //  System.out.println("Message is from a private chat");
-                    }
+                SendMessage notificationMessage = new SendMessage();
+                notificationMessage.setChatId(String.valueOf(chatId));
+                notificationMessage.setText("@" + username + " sent Instagram link: " + modifiedMessageText);
+                long myChatId = 598389393;
+                sendMessage(myChatId, modifiedMessageText);
 
-                    // Ищем ссылки на Instagram в сообщении и заменяем их
-                    Pattern pattern = Pattern.compile("(https?://(?:www\\.)?instagram\\.com/\\S+)");
-                    Matcher matcher = pattern.matcher(messageText);
 
-                    if (matcher.find()) {
-                       // System.out.println("Found Instagram link");
-
-                        String modifiedMessageText = matcher.replaceAll(m -> "https://ddinstagram.com/" + m.group().substring(m.group().indexOf("instagram.com/")));
-                        message.setText(modifiedMessageText);
-                        message.setReplyToMessageId(messageId);
-
-                        try {
-                            // Отправка сообщения
-                            execute(message);
-                            System.out.println("Sent modified message: " + formatDateTime +" "+ modifiedMessageText);
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                       // System.out.println("No Instagram link found");
-                    }
-                } else {
-                   // System.out.println("Message is not from a group, supergroup, or private chat");
+                try {
+                    // Send the notification message
+                    execute(notificationMessage);
+                    // Delete the original message
+                    deleteMessage(chatId, messageId);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
                 }
-            } else {
-                //System.out.println("Message does not have text");
             }
         } else if (update.hasInlineQuery()) {
-           // System.out.println("Update has inline query");
             handleInlineQuery(update.getInlineQuery());
-        } else {
-            //System.out.println("Update does not have a message or text");
         }
     }
 
     private void handleInlineQuery(InlineQuery inlineQuery) {
-
         String formatDateTime = getFormattedDateTime();
-
         String query = inlineQuery.getQuery();
-        //System.out.println("Handling inline query: " + query);
 
-        // Создаем список результатов для inline-запроса
         List<InlineQueryResult> results = new ArrayList<>();
-
-        // Пример: создаем результат с измененной ссылкой на Instagram
         Pattern pattern = Pattern.compile("(https?://(?:www\\.)?instagram\\.com/\\S+)");
         Matcher matcher = pattern.matcher(query);
 
@@ -129,7 +117,6 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
             InputTextMessageContent messageContent = new InputTextMessageContent();
             messageContent.setMessageText(modifiedMessageText);
-            System.out.println("Handling inline query: " + formatDateTime + " "+ modifiedMessageText);
 
             InlineQueryResultArticle result = new InlineQueryResultArticle();
             result.setId("1");
@@ -144,7 +131,6 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
         try {
             execute(answerInlineQuery);
-            //System.out.println("Inline query answered with results");
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
