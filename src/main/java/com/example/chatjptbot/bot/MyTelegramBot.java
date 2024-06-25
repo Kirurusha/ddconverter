@@ -89,7 +89,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             sendMessage.setChatId(String.valueOf(chatId));
 
             // Проверяем команды /start и /help
-            if (messageText.equals("/start")) {
+            if (messageText.equals("/start") || messageText.equals("/start@" + getBotUsername())) {
                 sendMessage.setText(
                         "Добро пожаловать в нашего бота!\n\n" +
                                 "Этот бот помогает вам преобразовывать ссылки на Instagram, заменяя их на https://ddinstagram.com/.\n\n" +
@@ -102,7 +102,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                                 "Вы можете использовать инлайн запросы для быстрого преобразования ссылок на Instagram, не выходя из текущего чата. Просто введите @Instagram_converter_bot и ссылку на Instagram, и бот предложит вам измененную ссылку.\n\n" +
                                 "Если у вас есть вопросы или нужна помощь, используйте команду /help для получения дополнительной информации."
                 ); sendMessage(sendMessage);
-            } else if (messageText.equals("/help")) {
+            } else if (messageText.equals("/help")|| messageText.equals("/help@" + getBotUsername())) {
                 sendMessage.setText(
                         "Как использовать бота:\n" +
                                 "1. **Личный чат с ботом**: Просто отправьте ссылку на Instagram, и бот автоматически изменит её.\n" +
