@@ -48,6 +48,15 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    public void sendMessage(SendMessage message) {
+        try {
+            execute(message);
+            System.out.println("Message sent " + message.getText());
+
+        }catch (TelegramApiException e) {
+            e.printStackTrace();}
+    }
+
     public void deleteMessage(Long chatId, Integer messageId) {
         DeleteMessage deleteMessage = new DeleteMessage();
         deleteMessage.setChatId(chatId.toString());
@@ -74,6 +83,38 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             User user = message.getFrom();
             String username = user.getUserName() != null ? user.getUserName() : user.getFirstName();
 
+
+            // Создаем объект SendMessage для отправки простого текстового сообщения
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(String.valueOf(chatId));
+
+            // Проверяем команды /start и /help
+            if (messageText.equals("/start")) {
+                sendMessage.setText(
+                        "Добро пожаловать в нашего бота!\n\n" +
+                                "Этот бот помогает вам преобразовывать ссылки на Instagram, заменяя их на https://ddinstagram.com/.\n\n" +
+                                "Как использовать бота:\n" +
+                                "1. **Личный чат с ботом**: Просто отправьте ссылку на Instagram, и бот автоматически изменит её.\n" +
+                                "2. **Добавление бота в группу**: Добавьте бота в вашу группу и предоставьте ему права администратора для удаления сообщений. Отправьте ссылку на Instagram в группе, и бот изменит её.\n\n" +
+                                "Для использования бота в группе:\n" +
+                                "- Убедитесь, что у бота есть права администратора, чтобы он мог удалять оригинальные сообщения с ссылками на Instagram.\n" +
+                                "Инлайн запросы:\n" +
+                                "Вы можете использовать инлайн запросы для быстрого преобразования ссылок на Instagram, не выходя из текущего чата. Просто введите @Instagram_converter_bot и ссылку на Instagram, и бот предложит вам измененную ссылку.\n\n" +
+                                "Если у вас есть вопросы или нужна помощь, используйте команду /help для получения дополнительной информации."
+                ); sendMessage(sendMessage);
+            } else if (messageText.equals("/help")) {
+                sendMessage.setText(
+                        "Как использовать бота:\n" +
+                                "1. **Личный чат с ботом**: Просто отправьте ссылку на Instagram, и бот автоматически изменит её.\n" +
+                                "2. **Добавление бота в группу**: Добавьте бота в вашу группу и предоставьте ему права администратора для удаления сообщений. Отправьте ссылку на Instagram в группе, и бот изменит её.\n\n" +
+                                "Инлайн запросы:\n" +
+                                "Вы можете использовать инлайн запросы для быстрого преобразования ссылок на Instagram, не выходя из текущего чата. Просто введите @Instagram_converter_bot и ссылку на Instagram, и бот предложит вам измененную ссылку.\n\n" +
+                                "Если у вас есть вопросы или нужна помощь, используйте команду /help для получения дополнительной информации."
+                );
+                sendMessage(sendMessage);
+            }else{
+
+
             Pattern pattern = Pattern.compile("(https?://(?:www\\.)?instagram\\.com/\\S+)");
             Matcher matcher = pattern.matcher(messageText);
 
@@ -99,6 +140,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
+        }
         } else if (update.hasInlineQuery()) {
             handleInlineQuery(update.getInlineQuery());
         }
