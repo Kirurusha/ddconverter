@@ -91,7 +91,18 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             // Проверяем команды /start и /help
             if (messageText.equals("/start") || messageText.equals("/start@" + getBotUsername())) {
                 sendMessage.setText(
-                        "Добро пожаловать в нашего бота!\n\n" +
+                        "Welcome to our bot!\n\n" +
+                                "This bot helps you convert Instagram links by changing them to https://ddinstagram.com/.\n\n" +
+                                "How to use the bot:\n" +
+                                "1. **Personal chat with the bot**: Simply send an Instagram link, and the bot will automatically change it.\n" +
+                                "2. **Adding the bot to a group**: Add the bot to your group and grant it admin rights to delete messages. Send an Instagram link in the group, and the bot will change it.\n\n" +
+                                "For group use:\n" +
+                                "- Ensure the bot has admin rights to delete the original messages with Instagram links.\n" +
+                                "Inline queries:\n" +
+                                "You can use inline queries for quick conversion of Instagram links without leaving the current chat. Just type @Instagram_converter_bot and the Instagram link, and the bot will suggest the modified link.\n\n" +
+                                "If you have any questions or need help, use the /help command for more information.\n\n" +
+
+                                "Добро пожаловать в нашего бота!\n\n" +
                                 "Этот бот помогает вам преобразовывать ссылки на Instagram, заменяя их на https://ddinstagram.com/.\n\n" +
                                 "Как использовать бота:\n" +
                                 "1. **Личный чат с ботом**: Просто отправьте ссылку на Instagram, и бот автоматически изменит её.\n" +
@@ -104,7 +115,14 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                 ); sendMessage(sendMessage);
             } else if (messageText.equals("/help")|| messageText.equals("/help@" + getBotUsername())) {
                 sendMessage.setText(
-                        "Как использовать бота:\n" +
+                        "How to use the bot:\n" +
+                                "1. **Personal chat with the bot**: Simply send an Instagram link, and the bot will automatically change it.\n" +
+                                "2. **Adding the bot to a group**: Add the bot to your group and grant it admin rights to delete messages. Send an Instagram link in the group, and the bot will change it.\n\n" +
+                                "Inline queries:\n" +
+                                "You can use inline queries for quick conversion of Instagram links without leaving the current chat. Just type @Instagram_converter_bot and the Instagram link, and the bot will suggest the modified link.\n\n" +
+                                "If you have any questions or need help, use the /help command for more information.\n\n" +
+
+                                "Как использовать бота:\n" +
                                 "1. **Личный чат с ботом**: Просто отправьте ссылку на Instagram, и бот автоматически изменит её.\n" +
                                 "2. **Добавление бота в группу**: Добавьте бота в вашу группу и предоставьте ему права администратора для удаления сообщений. Отправьте ссылку на Instagram в группе, и бот изменит её.\n\n" +
                                 "Инлайн запросы:\n" +
