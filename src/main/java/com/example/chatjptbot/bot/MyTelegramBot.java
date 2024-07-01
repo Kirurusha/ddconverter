@@ -2,6 +2,7 @@ package com.example.chatjptbot.bot;
 
 import com.example.chatjptbot.bot.configuration.BotConfig;
 import com.example.chatjptbot.bot.entity.UserEntity;
+import com.example.chatjptbot.bot.service.MessageService;
 import com.example.chatjptbot.bot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,12 +32,16 @@ import java.util.regex.Pattern;
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final MessageService messageService;
+
+
 
     @Autowired
-    public MyTelegramBot(BotConfig botConfig) {
+    public MyTelegramBot(BotConfig botConfig, UserService userService, MessageService messageService) {
         this.botConfig = botConfig;
+        this.userService = userService;
+        this.messageService = messageService;
     }
 
     private String getFormattedDateTime() {
@@ -94,6 +99,8 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
 
             Optional<UserEntity> userEntity = userService.findByTelegramId(chatId);
+
+
             if (userEntity.isEmpty()) {
                 userEntity = Optional.of(new UserEntity());
                 userEntity.get().setTelegramId(chatId);
@@ -107,6 +114,8 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             } else {
                 sendMessage(chatId, "user already exists");
             }
+
+
 
 
 
@@ -162,35 +171,41 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                                 "Если у вас есть вопросы или нужна помощь, используйте команду /help для получения дополнительной информации."
                 );
                 sendMessage(sendMessage);
-            }else{
+
+            } else if (messageText.equals("/subscribe") || messageText.equals("/subscribe@" + getBotUsername())) {
+            messageService.sendSubscribeButton(chatId);
 
 
-            Pattern pattern = Pattern.compile("(https?://(?:www\\.)?instagram\\.com/\\S+)");
-            Matcher matcher = pattern.matcher(messageText);
 
-            if (matcher.find()) {
-                String modifiedMessageText = matcher.replaceAll(m -> {
-                    String url = m.group();
-                    return url.replace("instagram.com", "ddinstagram.com");
-                });
-
-                SendMessage notificationMessage = new SendMessage();
-                notificationMessage.setChatId(String.valueOf(chatId));
-                notificationMessage.setText("@" + username + " sent Instagram link: " + modifiedMessageText);
-                long myChatId = 598389393;
-                sendMessage(myChatId, modifiedMessageText);
+            } else {
 
 
-                try {
-                    // Send the notification message
-                    execute(notificationMessage);
-                    // Delete the original message
-                    deleteMessage(chatId, messageId);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
+                Pattern pattern = Pattern.compile("(https?://(?:www\\.)?instagram\\.com/\\S+)");
+                Matcher matcher = pattern.matcher(messageText);
+
+                if (matcher.find()) {
+                    String modifiedMessageText = matcher.replaceAll(m -> {
+                        String url = m.group();
+                        return url.replace("instagram.com", "ddinstagram.com");
+                    });
+
+                    SendMessage notificationMessage = new SendMessage();
+                    notificationMessage.setChatId(String.valueOf(chatId));
+                    notificationMessage.setText("@" + username + " sent Instagram link: " + modifiedMessageText);
+                    long myChatId = 598389393;
+                    sendMessage(myChatId, modifiedMessageText);
+
+
+                    try {
+                        // Send the notification message
+                        execute(notificationMessage);
+                        // Delete the original message
+                        deleteMessage(chatId, messageId);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
         } else if (update.hasInlineQuery()) {
             handleInlineQuery(update.getInlineQuery());
         }

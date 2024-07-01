@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
@@ -30,6 +32,25 @@ public class UserEntity {
     private java.sql.Timestamp createdAt;
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Subscription> subscriptions;
+    public void setTelegramId(Long telegramId) {
+        this.telegramId = telegramId;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @Override
     public String toString() {
