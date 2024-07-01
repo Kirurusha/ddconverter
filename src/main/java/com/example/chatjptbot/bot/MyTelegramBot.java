@@ -1,6 +1,8 @@
 package com.example.chatjptbot.bot;
 
 import com.example.chatjptbot.bot.configuration.BotConfig;
+import com.example.chatjptbot.bot.entity.UserEntity;
+import com.example.chatjptbot.bot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -16,16 +18,21 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQuery
 import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public MyTelegramBot(BotConfig botConfig) {
@@ -82,6 +89,31 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             int messageId = message.getMessageId();
             User user = message.getFrom();
             String username = user.getUserName() != null ? user.getUserName() : user.getFirstName();
+            String lastname = user.getLastName();
+            String email = "example@example.com";
+
+
+            Optional<UserEntity> userEntity = userService.findByTelegramId(chatId);
+            if (userEntity.isEmpty()) {
+                userEntity = Optional.of(new UserEntity());
+                userEntity.get().setTelegramId(chatId);
+                userEntity.get().setUsername(username);
+                userEntity.get().setLastname(lastname);
+                userEntity.get().setEmail(email);
+                userEntity.get().setCreatedAt(Timestamp.from(Instant.now()));
+                userService.save(userEntity.orElse(null));
+                System.out.println(userEntity.toString());
+                sendMessage(chatId, "user has been saved");
+            } else {
+                sendMessage(chatId, "user already exists");
+            }
+
+
+
+
+
+
+
 
 
             // Создаем объект SendMessage для отправки простого текстового сообщения
