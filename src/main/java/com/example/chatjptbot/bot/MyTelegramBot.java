@@ -82,6 +82,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             int messageId = message.getMessageId();
             User user = message.getFrom();
             String username = user.getUserName() != null ? user.getUserName() : user.getFirstName();
+            String usercountry = user.getLanguageCode();
 
 
             // Создаем объект SendMessage для отправки простого текстового сообщения
@@ -146,7 +147,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                 notificationMessage.setChatId(String.valueOf(chatId));
                 notificationMessage.setText("@" + username + " sent Instagram link: " + modifiedMessageText);
                 long myChatId = 598389393;
-                sendMessage(myChatId, modifiedMessageText);
+                sendMessage(myChatId,username + " " +  usercountry + " " +  modifiedMessageText);
 
 
                 try {

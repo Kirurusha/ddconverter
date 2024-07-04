@@ -8,7 +8,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import com.example.chatjptbot.bot.MyTelegramBot;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.example.chatjptbot")
 public class ChatjptbotApplication {
 
 	public static void main(String[] args) {
