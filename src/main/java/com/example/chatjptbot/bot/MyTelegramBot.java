@@ -140,8 +140,8 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             if (matcher.find()) {
                 String modifiedMessageText = matcher.replaceAll(m -> {
                     String url = m.group();
-                    String modifiedUrl = url.replace("instagram.com", "ddinstagram.com");
-                    return modifiedUrl + "\n\nLink modified by [ddinstagram](https://t.me/Instagram_converter_bot).";
+                    return url.replace("instagram.com", "ddinstagram.com");
+
                 });
 
                 SendMessage notificationMessage = new SendMessage();
@@ -187,7 +187,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
             InlineQueryResultArticle result = new InlineQueryResultArticle();
             result.setId("1");
-            result.setTitle("Modified Instagram Link");
+            result.setTitle("Modified Link");
             result.setInputMessageContent(messageContent);
             results.add(result);
         }
