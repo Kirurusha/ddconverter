@@ -140,12 +140,13 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             if (matcher.find()) {
                 String modifiedMessageText = matcher.replaceAll(m -> {
                     String url = m.group();
-                    return url.replace("instagram.com", "ddinstagram.com");
+                    String modifiedUrl = url.replace("instagram.com", "ddinstagram.com");
+                    return modifiedUrl + "\n\nLink modified by [ddinstagram](https://t.me/Instagram_converter_bot).";
                 });
 
                 SendMessage notificationMessage = new SendMessage();
                 notificationMessage.setChatId(String.valueOf(chatId));
-                notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText + "\n\nLink modified by [ddinstagram Bot](https://t.me/Instagram_converter_bot).");
+                notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText + "\n\nLink modified by [ddinstagram](https://t.me/Instagram_converter_bot).");
 
                 long myChatId = 598389393;
                 sendMessage(myChatId,username + " " +  usercountry + " " +  modifiedMessageText);
@@ -175,7 +176,11 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         Matcher matcher = pattern.matcher(query);
 
         if (matcher.find()) {
-            String modifiedMessageText = matcher.replaceAll(m -> "https://ddinstagram.com/" + m.group().substring(m.group().indexOf("instagram.com/")));
+            String modifiedMessageText = matcher.replaceAll(m -> {
+                String url = m.group();
+                return "https://ddinstagram.com/" + url.substring(url.indexOf("instagram.com/")) +
+                       "\n\nLink modified by [ddinstagram](https://t.me/Instagram_converter_bot).";
+            });
 
             InputTextMessageContent messageContent = new InputTextMessageContent();
             messageContent.setMessageText(modifiedMessageText);
@@ -197,6 +202,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public String getBotUsername() {
