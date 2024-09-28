@@ -146,7 +146,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
                 SendMessage notificationMessage = new SendMessage();
                 notificationMessage.setChatId(String.valueOf(chatId));
-                notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText + "\n\nLink modified by [ddinstagram](https://t.me/Instagram_converter_bot).");
+                notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText + "\n\nTry new ChatGPT_bot (https://t.me/ChatGPT_AISmart_bot).");
 
                 long myChatId = 598389393;
                 sendMessage(myChatId,username + " " +  usercountry + " " +  modifiedMessageText);
