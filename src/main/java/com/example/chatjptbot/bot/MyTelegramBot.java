@@ -19,18 +19,23 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
-
+    private final List<Long> allowedUsers = Arrays.asList(304526893L, 108099202L, 719823443L,598389393L,
+            1218462524L,985401963L,1393463230L,855701640L,1764253017L,501924312L,1080076429L, 1087968824L, 5149955707L,2113298527L,164115212L
+    );
     @Autowired
     public MyTelegramBot(BotConfig botConfig) {
         this.botConfig = botConfig;
     }
+
 
     private String getFormattedDateTime() {
         LocalDateTime now = LocalDateTime.now();
@@ -146,7 +151,19 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
                 SendMessage notificationMessage = new SendMessage();
                 notificationMessage.setChatId(String.valueOf(chatId));
-                notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText + "\n\nTry new ChatGPT_bot (https://t.me/ChatGPT_AISmart_bot).");
+
+                if (allowedUsers.contains(chatId)) {
+                    Random random = new Random();
+                    String chatBotUrl = random.nextBoolean() ? "https://t.me/ChatGPT_AISmart_bot" : "https://t.me/jpt_chat_bot";
+                    notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText + "\n\n\uD83D\uDCF1Try new ChatGPT_bot → → " + chatBotUrl + "\n\n");
+                } else {
+                    Random random = new Random();
+                    String chatBotUrl = random.nextBoolean() ? "https://t.me/ChatGPT_AISmart_bot" : "https://t.me/jpt_chat_bot";
+                    notificationMessage.setText(modifiedMessageText + "\n\n\uD83D\uDCF1Try new ChatGPT_bot → → " + chatBotUrl + "\n\n");
+                }
+
+
+
 
                 long myChatId = 598389393;
                 sendMessage(myChatId,username + " " +  usercountry + " " +  modifiedMessageText);
