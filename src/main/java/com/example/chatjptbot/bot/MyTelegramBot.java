@@ -154,7 +154,8 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
                 if (allowedUsers.contains(chatId)) {
                     Random random = new Random();
-                    String chatBotUrl = random.nextBoolean() ? "https://t.me/ChatGPT_AISmart_bot" : "https://t.me/jpt_chat_bot";
+                    //String chatBotUrl = random.nextBoolean() ? "https://t.me/ChatGPT_AISmart_bot" : "https://t.me/jpt_chat_bot";
+                    String chatBotUrl = random.nextBoolean() ? "https://t.me/jpt_chat_bot" : "https://t.me/jpt_chat_bot";
                     notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText +
                             "\n\n&#128172 <b>Try new ChatGPT_bot → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
                 } else {
