@@ -160,7 +160,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                             "\n\n&#128172 <b>Try new ChatGPT_bot → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
                 } else {
                     Random random = new Random();
-                    String chatBotUrl = random.nextBoolean() ? "https://t.me/ChatGPT_AISmart_bot" : "https://t.me/jpt_chat_bot";
+                    String chatBotUrl = random.nextBoolean() ? "https://t.me/jpt_chat_bot" : "https://t.me/jpt_chat_bot";
                     notificationMessage.setText(modifiedMessageText +
                             "\n\n&#128172 <b>Try new ChatGPT_bot → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
                 }
