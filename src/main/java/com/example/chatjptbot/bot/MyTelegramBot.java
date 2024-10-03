@@ -152,18 +152,39 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                 SendMessage notificationMessage = new SendMessage();
                 notificationMessage.setChatId(String.valueOf(chatId));
 
+                Random random = new Random();
+                String chatBotUrl;
+
                 if (allowedUsers.contains(chatId)) {
-                    Random random = new Random();
-                    //String chatBotUrl = random.nextBoolean() ? "https://t.me/ChatGPT_AISmart_bot" : "https://t.me/jpt_chat_bot";
-                    String chatBotUrl = random.nextBoolean() ? "https://t.me/jpt_chat_bot" : "https://t.me/jpt_chat_bot";
-                    notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText +
-                            "\n\n&#128172 <b>Try new ChatGPT_bot → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
+                    // Генерируем случайное число от 0 до 100
+                    int chance = random.nextInt(100);
+
+                    // 25% вероятность для ссылки на канал о кино
+                    if (chance < 25) {
+                        chatBotUrl = "https://t.me/Cenemafeels";
+                        notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText +
+                                "\n\n&#128172 <b>Канал о кино и не только → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
+                    } else {
+                        chatBotUrl = "https://t.me/jpt_chat_bot";
+                        notificationMessage.setText("@" + username + " sent an Instagram link: " + modifiedMessageText +
+                                "\n\n&#128172 <b>Try new ChatGPT_bot → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
+                    }
                 } else {
-                    Random random = new Random();
-                    String chatBotUrl = random.nextBoolean() ? "https://t.me/jpt_chat_bot" : "https://t.me/jpt_chat_bot";
-                    notificationMessage.setText(modifiedMessageText +
-                            "\n\n&#128172 <b>Try new ChatGPT_bot → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
+                    // Генерируем случайное число от 0 до 100
+                    int chance = random.nextInt(100);
+
+                    // 25% вероятность для ссылки на канал о кино
+                    if (chance < 25) {
+                        chatBotUrl = "https://t.me/Cenemafeels";
+                        notificationMessage.setText(modifiedMessageText +
+                                "\n\n&#128172 <b>Канал о кино и не только → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
+                    } else {
+                        chatBotUrl = "https://t.me/jpt_chat_bot";
+                        notificationMessage.setText(modifiedMessageText +
+                                "\n\n&#128172 <b>Try new ChatGPT_bot → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
+                    }
                 }
+
 
                 notificationMessage.setParseMode("HTML"); // Указываем, что используем HTML
 
