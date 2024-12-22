@@ -174,7 +174,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                     int chance = random.nextInt(100);
 
                     // 25% вероятность для ссылки на канал о кино
-                    if (chance < 25) {
+                    if (chance < 1) {
                         chatBotUrl = "https://t.me/Cenemafeels";
                         notificationMessage.setText(modifiedMessageText +
                                 "\n\n&#128172 <b>Канал о кино и не только → → </b><a href='" + chatBotUrl + "'> " + chatBotUrl + "</a>\n\n_______________________");
